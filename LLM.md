@@ -31,6 +31,10 @@ NcatBot 是 NapCat 的 Python SDK. NcatBot 实现了连接和调用 NapCat 的�
 
 ## 开源声明
 
+::: caution
+任何使用该项目的自然人都必须了解并遵守本开源声明，一切因不遵守该声明所造成的不良后果，NcatBot开发项目组不承担任何责任。
+:::
+
 本项目采用 `NcatBot Non-Commercial License` 开源, 在 `Apache License 2.0` 协议的基础上, **限制**对 **NcatBot 源代码的二次开发**以及**任何形式的商业用途**, 具体条款如下:
 
 ```
@@ -132,6 +136,7 @@ permalink: /guide/minimali/
 
 - [Linux](./2.%20Linux%20安装.md)
 - [Windows](./3.%20Windows%20安装.md)
+- [Windows Server](./4.%20Windows%20Server%20安装.md)
 - [MacOS](./4.%20MacOS%20安装.md)
 
 ## 环境检查
@@ -205,6 +210,15 @@ sudo dnf install -y epel-release && sudo dnf install --allowerasing -y curl sudo
 
 ==请不要从 GitHub 上下载 .zip 压缩包，如果下载过，请删掉所有相关的文件。==
 
+先进入 root 用户模式。
+
+::: code-tabs
+@tab linux
+```shell
+sudo su
+```
+:::
+
 执行该命令，在用户目录创建虚拟环境、激活环境并下载有关资源。
 
 ::: code-tabs
@@ -259,7 +273,7 @@ bot.run() # 一直执行，不会结束
 
 ## 常见问题
 
-查阅 [FAQ](../7.%20常见问题/1.%20安装时常见问题.md)
+查阅 [FAQ](../10.%20常见问题/1.%20安装时常见问题.md)
 
 
 ---
@@ -312,7 +326,11 @@ pip install ncatbot -U -i https://mirrors.aliyun.com/pypi/simple
 ```
 :::
 
-## 3. 安装最新版 QQ（可选）
+## 3. 安装最新版 QQ
+
+:::tip
+如果出现无法登录的问题，请先卸载掉 QQ，再去官网下载安装最新版 QQ。
+:::
 
 卸载掉电脑上已经安装的 QQ。
 
@@ -329,13 +347,13 @@ pip install ncatbot -U -i https://mirrors.aliyun.com/pypi/simple
 
 NcatBot 相当于一个电脑 QQ 客户端，因此在登陆前，==你需要退出 Bot 在其它电脑客户端上的登录。==
 
-### 建立工作目录
+### 开始运行
 
 建立一个==新的工作目录==(文件夹)，文件夹名为 `ncatbot`。
 
 1. 双击进入 `ncatbot` 文件夹.
 
-2. 文件夹新建一个 `main.py` 文件，注意[后缀名](https://zhuanlan.zhihu.com/p/112226609) 是 `.py`
+2. 在文件夹中新建一个 `main.py` 文件，注意[后缀名](https://zhuanlan.zhihu.com/p/112226609) 是 `.py`
 
 3. 用记事本或者其它文本编辑器打开 `main.py` 文件，复制以下代码进去，并**保存**。
 
@@ -378,17 +396,169 @@ bot.run()
 
 ## 5. 常见问题
 
+### 卡在登录中
+
+- 如果使用的是云电脑，安全机制会阻止 NcatBot 正常运行。此时建议
+  - 使用自己的电脑。
+  - 使用 Linux 操作系统。
+
 ### 有一步做不下去怎么办？
 
 - 将本教程全数复制下来，发给 AI（kimi 等），并将你的疑惑告诉它，它会教你。
 
-### 好像由红色的报错？ 
+### 好像有红色的报错？ 
 
 - 将出现**红色错误提示**的页面，**尽可能全的截取下来**，交给 Kimi 等 AI 助手并请求它们的帮助。
 
+
+
 ---
 
-# 文件: 1. 开始\3. 安装教程\4. MacOS 安装.md
+# 文件: 1. 开始\3. 安装教程\4. Windows Server 安装.md
+
+---
+title: Windows Server 安装
+createTime: 2025/10/23 00:26:37
+permalink: /guide/winServerinsta/
+---
+
+如果是使用云服务器进行部署，建议使用Linux环境，如果没有Linux基础，或者有特殊业务需求，那也可参考本篇关于Windows Server的安装教程。
+
+::: warning
+此教程适用 Windows Server 2019、Windows Server 2022 操作系统。
+:::
+
+> [!IMPORTANT]
+> 如果你使用的是Windows Server 2019，强烈建议你先使用ie安装Microsoft Edge浏览器，而不是直接使用ie。
+<br />无论使用什么版本的Windows Server，ncatbot都可能无法自行安装napcat，需要你自行安装napcat。
+<br />不建议在Windows Server 2025上运行本项目，因为大多数云服务器承担不起系统的性能开销，如果硬要用，可以基本参考本篇的教程。
+
+---
+## 1. 安装 Python
+进入[Python官网](https://www.python.org/)下载Python3.12的安装包。
+
+以管理员身份运行安装包并安装Python。
+
+如果安装包报错`0x80070659 系统策略禁止这个安装`。
+
+那么尝试**以管理员身份运行**cmd并输入以下命令：
+```shell
+reg add "HKLM\Software\Policies\Microsoft\Windows\Installer" /v DisableMSI /t REG_DWORD /d 0 /f
+```
+或者使用 PowerShell(**管理员**) 运行以下命令：
+```shell
+New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows" -Name "Installer" -Force | Out-Null
+New-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\Installer" -Name "DisableMSI" -PropertyType DWord -Value 0 -Force | Out-Null
+```
+然后再以管理员身份执行Python的安装。
+
+## 2. 手动安装napcat和qq（可选）
+
+::: note
+如果在第四步中，Ncatbot自动安装napcat时出错可以参考这一步。
+:::
+
+详细可参阅[NapCat.Shell - Win 手动启动教程](https://napneko.github.io/guide/boot/Shell#napcat-shell-win-%E6%89%8B%E5%8A%A8%E5%90%AF%E5%8A%A8%E6%95%99%E7%A8%8B)。
+
+从napcat的[Github仓库](https://github.com/NapNeko/NapCatQQ/releases)中下载最新的**NapCat.Shell.zip**。
+
+把下载的压缩包中的文件复制到一个叫`napcat`的文件夹中，并且把文件夹移动到**ncatbot入口程序**（例如`./main.py`）的**根目录**，就像`./napcat`。
+
+从QQ官网下载并安装最新的[QQNT](https://im.qq.com/pcqq/index.shtml)
+
+## 3. 安装 NcatBot
+::: warning
+不要从 GitHub 上下载 .zip 压缩包；如果下载并解压过，请删掉解压出来的文件。
+:::
+
+项目已经发布到 PYPI, 可以使用 pip 直接下载本项目。
+
+按下 `Win+R`, 在左下角打开**运行**, 输入 `powershell` 并回车, 打开**终端**。
+
+复制下面的代码, 粘贴到**终端**中, 按回车执行。
+
+::: code-tabs
+@tab pip(稳定版, 推荐)
+
+```shell
+pip install ncatbot -U -i https://mirrors.aliyun.com/pypi/simple
+```
+:::
+
+## 4. NcatBot 启动
+
+### 准备 QQ 号
+
+为了测试, 需要两个 QQ 号：
+
+- **Bot**: 由 NcatBot 控制, 可以使用接口收发消息.
+- **root**: 由你控制, 用于测试 Bot 的功能.
+
+NcatBot 相当于一个电脑 QQ 客户端，因此在登陆前，==你需要退出 Bot 在其它电脑客户端上的登录。==
+
+### 开始运行
+
+建立一个==新的工作目录==(文件夹)，文件夹名为 `ncatbot`。
+
+1. 双击进入 `ncatbot` 文件夹.
+
+2. 在文件夹中新建一个 `main.py` 文件，注意[后缀名](https://zhuanlan.zhihu.com/p/112226609) 是 `.py`
+
+3. 用记事本或者其它文本编辑器打开 `main.py` 文件，复制以下代码进去，并**保存**。
+
+::: code-tabs
+@tab Python
+```python
+# ========= 导入必要模块 ==========
+from ncatbot.core import BotClient, PrivateMessage
+
+# ========== 创建 BotClient ==========
+bot = BotClient()
+
+# ========= 注册回调函数 ==========
+@bot.private_event()
+async def on_private_message(msg: PrivateMessage):
+    if msg.raw_message == "测试":
+        await bot.api.post_private_msg(msg.user_id, text="NcatBot 测试成功喵~")
+
+# ========== 启动 BotClient==========
+bot.run()
+```
+:::
+
+4. 进入 ncatbot 文件夹，点击上方的地址栏（例如`C:\Users\admin\Desktop\ncat`）,清空地址栏。然后输入 powershell → 回车，打开PowerShell窗口，接着输入 `python main.py` 运行代码。
+
+5. 在手机上登录 Bot。电脑上按照提示输入 Bot QQ 号，然后手机扫码登录。
+
+6. 接着使用 root 向 Bot 发送一条消息 "测试"，收到回复即正常运行。
+
+## 5. 常见问题
+
+### 授权操作超时
+
+在保证napcat正常运行的前提下
+
+考虑在启动参数中加入 enable_webui_interaction=False 跳过
+
+即`bot.run(enable_webui_interaction=False)`
+
+### 自动安装napcat失败
+
+反复出现以下报错
+
+` <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1010)>`
+
+`安装失败: request timed out`
+
+尝试参考第二步[手动安装napcat](#_2-手动安装napcat和qq-可选)
+
+### napcat无法登录qq
+
+如果出现无法登录的问题，请先卸载掉 QQ，再去官网下载安装最新版 QQ。必要时参考第二条[手动安装napcat](#_2-手动安装napcat和qq-可选)。
+
+---
+
+# 文件: 1. 开始\3. 安装教程\5. MacOS 安装.md
 
 ---
 title: MacOS 安装
@@ -1284,6 +1454,7 @@ NcatBot 会上报以下事件：
 ```python
 OFFICIAL_GROUP_MESSAGE_EVENT = "ncatbot.group_message_event"
 OFFICIAL_PRIVATE_MESSAGE_EVENT = "ncatbot.private_message_event"
+OFFICIAL_MESSAGE_SEND_EVENT = "ncatbot.message_sent_event"
 OFFICIAL_REQUEST_EVENT = "ncatbot.request_event"
 OFFICIAL_NOTICE_EVENT = "ncatbot.notice_event"
 OFFICIAL_STARTUP_EVENT = "ncatbot.startup_event"
@@ -1300,6 +1471,7 @@ OFFICIAL_HEARTBEAT_EVENT = "ncatbot.heartbeat_event"
 - 消息事件：
     - 群消息事件 (GROUP_MESSAGE_EVENT)
     - 私聊消息事件 (PRIVATE_MESSAGE_EVENT)
+    - 自身消息 (MESSAGE_SENT_EVENT)
 - 请求事件 (REQUEST_EVENT)
 - 通知事件 (NOTICE_EVENT)
 
@@ -1319,6 +1491,7 @@ BotClient 同时提供「函数式 API」与「装饰器 API」。两种方式�
 
 - 群消息：`add_group_message_handler(handler, filter=None)`
 - 私聊：`add_private_message_handler(handler, filter=None)`
+- 自身消息：`add_message_sent_handler(handler, filter=None)`
 - 通知：`add_notice_handler(handler, filter=None)`
 - 请求：`add_request_handler(handler, filter=Literal['group','friend'])`
 - 启动：`add_startup_handler(handler)`
@@ -1351,6 +1524,7 @@ bot.add_group_message_handler(on_group, filter=Image)
 
 - 群消息：`@bot.on_group_message(filter=...)`
 - 私聊：`@bot.on_private_message(filter=...)`
+- 自身消息：`@bot.on_message_sent(filter=...)`
 - 通知：`@bot.on_notice()`
 - 请求：`@bot.on_request(filter='group'|'friend')`
 - 启动：`@bot.on_startup()`
@@ -1767,6 +1941,7 @@ permalink: /guide/events/
 NcatBot 将 OneBot/NapCat 的原始事件（称为官方事件）结构封装为更易用的事件对象。本文介绍全部事件对象及其附属数据结构：
 - GroupMessageEvent（群消息）
 - PrivateMessageEvent（私聊消息）
+- MessageSendEvent（自身消息）
 - RequestEvent（请求：加好友/加群）
 - NoticeEvent（通知：群上传/变更/撤回等）
 
@@ -1782,6 +1957,7 @@ classDiagram
     MessageEventData <|-- BaseMessageEvent
     BaseMessageEvent <|-- GroupMessageEvent
     BaseMessageEvent <|-- PrivateMessageEvent
+    BaseMessageEvent <|-- MessageSendEvent
     BaseEventData <|-- NoticeEvent
     BaseEventData <|-- RequestEvent
     BaseEventData <|-- MetaEvent
@@ -1845,6 +2021,18 @@ async def on_group(e: GroupMessageEvent):
 - `await reply(text=None, image=None, rtf=None) -> str`：私聊回复，会自动引用原消息，返回消息 ID；
 
 ---
+
+## MessageSendEvent（自身消息）
+
+关键字段（只列核心）：
+- 包括[BaseEventData](#BaseEventData) 的所有字段。
+- `message_sent_type`: `str`，消息发送者类型，上报为自身消息时为`self`。
+
+便携方法：
+- `await reply(text=None, image=None, rtf=None) -> str`:便携回复自身消息，可自动判断回复群消息还是私聊消息；
+- `is_group_msg()`: 判断是否为群消息；
+- `is_private_msg()`: 判断是否为私聊消息；
+- `delete()`: 撤回本条消息。
 
 ## Sender（消息发送者信息）
 
@@ -2697,7 +2885,7 @@ bot.run_frontend()
 ## 互斥参数
 
 部分接口存在互斥参数（必须且只能二选一），例如：
-- `send_poke(group_id=None, user_id=None)`：`group_id` 与 `user_id` 传其一即可。
+
 - `get_record(file=None, file_id=None)`、`get_image(file=None, file_id=None)`：二选一。
 
 当传入冲突参数时，内部会使用 `check_exclusive_argument` 抛出错误。
@@ -2709,11 +2897,6 @@ bot.run_frontend()
 - 获取类接口返回结构化对象（例如 `GroupMemberInfo`、`Image` 等）或字典数据。
 
 ## API 目录
-
-
-
-
-
 
 
 ---
@@ -2940,7 +3123,7 @@ await api.send_group_forward_msg_by_id(123456, [1231, 1232, 1233])
 ### send_group_forward_msg
 
 - **功能**: 发送合并转发（直接提供节点/新闻等原始结构）。
-- **参数**: 
+- **参数**:
     - `group_id: str | int`: 群号
     - `messages: list[dict]`: OneBot 风格消息片段列表
     - `news: list[str]`: 前若干条消息内容预览。
@@ -3118,6 +3301,7 @@ await api.send_private_music(123, "163", 987654)
 - **参数**: `user_id: str | int`, `audio: str`, `url: str`, `title: str`, `content: str | None`, `image: str | None`
 - **返回**: `str`，message_id
 - **示例**：
+
 ```python
 await api.send_private_custom_music(123, audio="https://a.mp3", url="https://page", title="标题")
 ```
@@ -3176,13 +3360,17 @@ await api.friend_poke(123)
 
 ### send_poke
 
-- **功能**: 戳一戳（互斥：二选一）。
-- **参数**: `group_id: str | int | None`, `user_id: str | int | None`
+- **功能**: 戳一戳。若传入了 `group_id` 则在指定群聊内戳一戳。
+- **参数**: `user_id: str | int`, `group_id: str | int | None`
 - **返回**: `None`
 - **示例**：
 
 ```python
-await api.send_poke(group_id=123456)  # 或 user_id=123
+# 在群 123456 内戳用户 123
+await api.send_poke(user_id=123, group_id=123456)
+
+# 私聊戳用户 123
+await api.send_poke(user_id=123)
 ```
 
 ### delete_msg
@@ -3191,6 +3379,7 @@ await api.send_poke(group_id=123456)  # 或 user_id=123
 - **参数**: `message_id: str | int`
 - **返回**: `None`
 - **示例**：
+
 ```python
 await api.delete_msg(mid)
 ```
@@ -3213,12 +3402,12 @@ await api.set_msg_emoji_like(mid, 128512)
 ### get_group_msg_history
 
 - **功能**: 拉取群历史消息。
-- **参数**: `group_id: str | int`, `message_seq: str | int`, `number: int = 20`, `reverseOrder: bool = False`
+- **参数**: `group_id: str | int`, `message_seq: str | int`, `count: int = 20`, `reverseOrder: bool = False`
 - **返回**: `list[GroupMessageEvent]`
 - **示例**：
 
 ```python
-msgs = await api.get_group_msg_history(123456, message_seq=1000, number=20)
+msgs = await api.get_group_msg_history(123456, message_seq=1000, count=20)
 ```
 
 ### get_msg
@@ -3246,10 +3435,10 @@ forward = await api.get_forward_msg(mid)
 ### get_friend_msg_history
 
 - **功能**: 拉取私聊历史消息。
-- **参数**: 
+- **参数**:
     - `user_id: str | int`： 对方 QQ 号
     - `message_seq: str | int`：消息 ID
-    - `number: int = 20`：拉取数量
+    - `count: int = 20`：拉取数量
     - `reverseOrder: bool = False`：是否按时间正序返回
 - **返回**: `list[PrivateMessageEvent]`
 - **示例**：
@@ -3261,7 +3450,7 @@ msgs = await api.get_friend_msg_history(123, 1000, 20)
 ### get_record
 
 - **功能**: 获取语音文件（互斥：`file` 与 `file_id`）。
-- **参数**: 
+- **参数**:
     - `file: str | None`：文件路径
     - `file_id: str | None`：文件 ID
     - `out_format: Literal["mp3","amr","wma","m4a","ogg","wav","flac","spx"] = "mp3"`：输出格式
@@ -3303,8 +3492,6 @@ detail = await api.fetch_emoji_like(mid, 128512, 1)
 ```
 
 ---
-
-
 
 
 ---
@@ -3613,8 +3800,8 @@ await api.set_group_kick(123456, 987654)
 
 ### set_group_ban
 
-:::warning
-解除禁言的方式还不明确
+:::tip
+duration 为 0 时为解除禁言
 :::
 
 - **功能**: 禁言成员。
@@ -4043,7 +4230,39 @@ await api.set_group_name(123456, "编程交流")
 await api._send_group_notice(123456, "今晚 8 点开会", pinned=True)
 ```
 
+### set_group_todo
+- **功能**: 设置群待办。
+- **参数**: `group_id`, `message_id`
+- **返回**: `None`
+- **示例**：
+```python
+await api.set_group_todo(123456, 123456789)
+```
 
+---
+
+## 群相册
+
+### get_group_album_list
+- **功能**: 获取群相册列表。
+- **参数**: `group_id`
+- **返回**: `list[dict]`
+- **示例**：
+```python
+await api.get_group_album_list(123456789)
+```
+
+### upload_image_to_group_album
+:::warning
+以`album_id`(通过get_group_album_list获取)代表的相册为准，==album_name参数暂时无效==，如果不传album_id，则上传到默认群相册
+:::
+- **功能**: 上传图片到群相册。
+- **参数**: `group_id`，`file`, `album_id`, `album_name`
+- **返回**: `list[dict]`
+- **示例**：
+```python
+await api.upload_image_to_group_album(123456789,"D:\pic.jpg", "A1B2C3D4E5", "群相册")
+```
 
 
 ---
@@ -4102,15 +4321,13 @@ await api.post_private_file(123, image="C:/a.jpg")
 ### set_input_status
 
 - **功能**: 设置输入状态。
-- **参数**: `status: int`（0="对方正在说话"，1="对方正在输入"）
+- **参数**: `event_type: int`（0="对方正在说话"，1="对方正在输入"）, `user_id: str | int`
 - **返回**: `None`
 - **示例**：
 
 ```python
-await api.set_input_status(1)
+await api.set_input_status(1, user_id=1)
 ```
-
-
 
 
 ---
@@ -4789,6 +5006,28 @@ class NcatBotPlugin(...):
     ...
 ```
 
+### 参数绑定失败事件
+
+当用户输入的命令参数与该命令实际要求的参数不匹配时（例如参数缺失、参数类型错误、参数数量不符等），NcatBot 会发布`ncatbot.param_bind_failed` 事件。插件可通过订阅该事件，自定义参数错误的提示逻辑，向用户反馈清晰的错误信息。
+```python
+    async def on_load(self):
+        self.event_bus.subscribe(
+            event_type="ncatbot.param_bind_failed",
+            handler=self.handle_param_error
+        )
+        LOG.info(f"{self.name} 已订阅ncatbot.param_bind_failed事件")
+
+    @command_registry.command("hello", description="简单问候指令（需要姓名参数）")
+    async def hello_cmd(self, event: BaseMessageEvent, name: str):
+        await event.reply(f"Hello!, {name}!")
+
+    async def handle_param_error(self, event: NcatBotEvent):
+        await self.api.post_private_msg(
+            user_id=event.data["event"].user_id,
+            text=f"❌命令「{event.data['cmd']}」\n{event.data['msg']}"
+        )
+```
+当用户发送`/hello TestUser 123`时，则会返回`命令「hello」\n参数解析异常：list index out of range`
 
 ## 发布事件
 
@@ -4806,7 +5045,6 @@ class MyPlugin(NcatBotPlugin):
         event = Event("MyPlugin.event", {"message": "hello"})
         await self.event_bus.publish_async(event)  # 异步发布不等待结果
 ```
-
 
 
 ---
@@ -5519,7 +5757,7 @@ https://github.com/liyihao1110/ncatbot
 # 文件: 7. 插件系统\3. 插件的交互系统\3.5 内置插件的拓展功能.md
 
 ---
-title: 系统命令
+title: 内置插件的拓展功能
 createTime: 2025/03/27 10:00:05
 permalink: /guide/extendfuncs/
 ---
@@ -5531,11 +5769,13 @@ permalink: /guide/extendfuncs/
 
 ## UnifiedRegistry 拓展功能
 
-### on_request 注册器
+### 事件过滤器
+
+#### 例如`on_request 注册器`
 
 为插件方法或普通方法注册 Request 事件处理器。
 
-[参考案例](../../9.%20实际项目参考/教程项目/4.%20处理好友请求和加群请求.md#前台模式（插件版）)
+[on_request 参考案例](../../9.%20实际项目参考/教程项目/4.%20处理好友请求和加群请求.md#前台模式（插件版）)
 
 ---
 
@@ -5603,7 +5843,7 @@ class MyPlugin(BasePlugin):
     version = '1.0.0'
 
     def callback(self, event: Event):
-        with self.work_space:
+        with self.workspace.open():
             # 此时目录为 data/MyPlugin/
             # 可以使用 os.chdir 等函数操作了
             
@@ -5826,7 +6066,7 @@ class MyPlugin(NcatBotPlugin):
 
 ## 配置项存储
 
-配置项存储在 `data/<插件名>/config.yaml` 文件中。
+配置项存储在 `data/<插件名>/<插件名>.yaml` 文件中。
 
 你可以在 Bot 退出后手动修改配置项。
 
@@ -5838,6 +6078,7 @@ class MyPlugin(NcatBotPlugin):
 
 `/set_config <插件名> <配置项名> <新值>` 修改配置项。
 `/cfg <插件名> <配置项名> <新值>` 别名。
+
 
 ---
 
@@ -7495,6 +7736,18 @@ async def on_message_callback(event: BaseMessageEvent):
     await event.reply("收到一条消息")
 ```
 
+### 5. EventTypeFilters - 事件类型过滤器
+
+用于过滤特定的事件。
+
+包括以下几个过滤器：
+
+- `@on_request` - 请求事件
+- `@on_notice` - 通知事件
+- `@on_group_poke` - 群戳一戳
+- `@on_group_at` - 机器人被@
+- `@on_group_increase` - 群成员入群
+- `@on_group_request` - 群请求事件
 
 ## 🔗 过滤器组合使用
 
@@ -11218,7 +11471,7 @@ bot = BotClient()
 
 @bot.group_event()
 async def on_group_message(msg:GroupMessage):
-    group_uin = 12345678 # 指定群聊的账号
+    group_uin = "12345678" # 指定群聊的账号
     if msg.group_id == group_uin and msg.raw_message == "你好":
         await bot.api.post_group_msg(msg.group_id, text="你好呀，有什么需要我帮忙的吗？")
 
@@ -11238,8 +11491,8 @@ bot = BotClient()
 
 @bot.group_event()
 async def on_group_message(msg:GroupMessage):
-    group_uin = 12345678 # 指定群聊的账号
-    user_uin = 987654321# 指定用户的账号
+    group_uin = "12345678" # 指定群聊的账号
+    user_uin = "987654321" # 指定用户的账号
     if msg.group_id == group_uin and msg.user_id == user_uin and msg.raw_message == "你好":
         await bot.api.post_group_file(group_id=group_uin, image="https://gitee.com/li-yihao0328/nc_bot/raw/master/logo.png")# 文件路径支持本地绝对路径，相对路径，网址以及base64
 
@@ -11533,3 +11786,20 @@ title:  开发时常见问题
 createTime: 2025/03/26 08:41:39
 permalink: /guide/pkst6v9y/
 ---
+
+## 为什么我的插件没有加载成功
+
+### 单文件插件
+
+#### 必须使用 `__all__` 关键字指定需要导入的插件
+
+```python
+class MyPlugin(NcatBotPlugin):
+    ...
+
+__all__ = [MyPlugin] # 必须在 __all__ 中声明需要加载的插件。
+```
+
+## 通用解决办法
+
+加入[我们](https://qm.qq.com/q/UDw4BmoU8M)，并反馈问题。
