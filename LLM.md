@@ -225,7 +225,7 @@ sudo su
 @tab pip
 ```shell
 cd ~
-python -m venv .ncatbot
+python3 -m venv .ncatbot
 . ~/.ncatbot/bin/activate
 pip install ncatbot -U -i https://mirrors.aliyun.com/pypi/simple
 ```
