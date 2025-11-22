@@ -4852,9 +4852,9 @@ permalink: /guide/loadplg/
 一般来说, 以下工作需要**你**在插件加载时完成:
 
 - 为插件[订阅事件](../7.%20插件系统/3.%20插件的交互系统/3.1%20事件的发布和订阅.md).
-- 为插件[注册插件配置项](3.%20插件的交互系统/3.4%20内置功能.md#插件配置项).
-- 为插件[注册功能](3.%20插件的交互系统/3.2%20注册功能.md).
-- 为插件[注册定时任务](3.%20插件的交互系统/3.4%20内置功能.md#定时任务).
+- 为插件[注册插件配置项](./4.%20插件高级功能/4.4%20插件配置项.md).
+- 为插件[注册功能](./3.%20插件的交互系统/3.2%20注册功能.md).
+- 为插件[注册定时任务](./4.%20插件高级功能/4.3%20定时任务.md).
 - 其它你**自定义的**需要在加载时初始化的任务.
 
 ```python
@@ -5904,6 +5904,26 @@ permalink: /guide/timertask/
 ## 概述
 
 `TimeTaskMixin` 是一个强大的定时任务调度混入类，为**插件**提供了灵活的定时任务管理功能。支持多种时间格式、条件触发、参数动态生成等高级特性。
+
+### 函数原型
+
+```python
+    def add_scheduled_task(
+        self,
+        job_func: Callable,
+        name: str,
+        interval: Union[str, int, float],
+        conditions: Optional[List[Callable[[], bool]]] = None,
+        max_runs: Optional[int] = None,
+        args: Optional[Tuple] = None,
+        kwargs: Optional[Dict] = None,
+        args_provider: Optional[Callable[[], Tuple]] = None,
+        kwargs_provider: Optional[Callable[[], Dict[str, Any]]] = None,
+    ) -> bool:
+```
+
+- `job_func`：要调度的任务函数，可以是同步或异步函数。
+- `name`：任务的唯一名称标识，如果要注册多个任务，**名称必须不同**。
 
 ## 基本用法
 
@@ -11786,6 +11806,10 @@ Windows 的防火墙策略拦截了 6099 端口, 请检查防火墙设置。
 
 
 ### Daemons using outdated libraries
+
+Package configuration 紫色页面
+
+[参见](https://github.com/liyihao1110/ncatbot/issues/240)
 
 Linux 终端环境可能会遇到这个报错，物理重启电脑后重试即可。
 
