@@ -2095,7 +2095,7 @@ async def on_group_request(e: RequestEvent):
   
 `notice_type` 字段选项：
 
-- `group_upload` 
+- `group_upload`
 - `group_admin`
 - `group_decrease`
 - `group_increase`
@@ -2103,7 +2103,9 @@ async def on_group_request(e: RequestEvent):
 - `group_recall`
 - `group_ban`
 - `notify`
+- `group_msg_emoji_like`
 ...
+
 
 更多详细信息参考[OneBot 事件文档](https://github.com/botuniverse/onebot-11/blob/master/event/notice.md)。
 
@@ -2130,6 +2132,15 @@ async def on_group_request(e: RequestEvent):
 - `user_id`：消息发送者 QQ 号
 - `operator_id`：操作者 QQ 号（如果是自己撤回，则和 user_id 相同）
 - `message_id`：被撤回的消息 ID
+
+### group_msg_emoji_like（群消息表情回应）
+
+关键字段：
+- `group_id`：群号
+- `user_id`：点赞者 QQ 号
+- `message_id`：被点赞的消息 ID
+- `emoji_like_id`：表情 ID
+- `is_add`：是否为新增回应 (bool)
 
 ---
 
@@ -3478,13 +3489,28 @@ img = await api.get_image(file_id="abc")
 
 ### fetch_emoji_like
 
-:::tip
-详细情况待完善
-:::
+- **功能**: 获取消息的表情回应详情。可以获取到具体是哪些用户对某条消息贴了某个表情。
+- **参数**:
+  - `message_id: str | int`: 目标消息的 ID。
+  - `emoji_id: str | int`: 要查询的表情 ID。
+  - `emoji_type: str | int`: 表情类型，通常为 `1`。
+- **返回**: `dict`，包含表情回应的详细信息。成功时 `retcode` 为 0，`data` 字段结构如下：
+  ```json
+  {
+    "result": 0,
+    "errMsg": "",
+    "emojiLikesList": [
+      {
+        "tinyId": "", // 回应用户的qq号
+        "nickName": "",     // 用户的昵称 (可能为空)
+        "headUrl": ""       // 用户的头像 URL (可能为空)
+      }
+    ],
+    "cookie": "",
+    "isLastPage": true,
+    "isFirstPage": true
+  }
 
-- **功能**: 获取贴表情详情。
-- **参数**: `message_id: str | int`, `emoji_id: str | int`, `emoji_type: str | int`
-- **返回**: `dict`
 - **示例**：
 
 ```python
@@ -11632,10 +11658,10 @@ def handle_request(msg: RequestEvent):
         LOG.info(f"收到好友请求，验证信息：{comment}")
         if "特定关键词" in comment:
             LOG.info("通过好友请求")
-            msg.reply_sync(True, remark="好友的名字")
+            msg.approve_sync(True, remark="好友的名字")
         else:
             LOG.info("拒绝好友请求")
-            msg.reply_sync(False)
+            msg.approve_sync(False)
 
 @bot.on_request
 async def handle_request_async(msg: Request):
@@ -11644,7 +11670,7 @@ async def handle_request_async(msg: Request):
     if msg.is_group_request():
         LOG.info(f"收到加群请求，验证信息：{comment}")
         if "特定关键词" in comment:
-            await msg.reply(True)
+            await msg.approve(True)
         else:
             await msg.reply(False, reason="拒绝你的请求")
 
@@ -11702,7 +11728,7 @@ class RequestHandlerPlugin(BasePlugin):
         if msg.is_group_request():
             LOG.info(f"收到加群请求，验证信息：{comment}")
             if "特定关键词" in comment:
-                await msg.reply(True)
+                await msg.approve(True)
             else:
                 await msg.reply(False, reason="拒绝你的请求")
 
