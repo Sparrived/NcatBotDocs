@@ -273,7 +273,7 @@ bot.run() # 一直执行，不会结束
 
 ## 常见问题
 
-查阅 [FAQ](../10.%20常见问题/1.%20安装时常见问题.md)
+查阅 [FAQ](../../10.%20常见问题/1.%20安装时常见问题.md) 页面.
 
 
 ---
@@ -288,6 +288,10 @@ permalink: /guide/wininsta/
 
 ::: warning
 此教程只适用 Window10、Windows11 操作系统。
+:::
+
+::: warning
+请不要在云电脑上使用本项目，如果需要上云请使用 Linux 操作系统。
 :::
 
 ## 任务列表
@@ -395,6 +399,10 @@ bot.run()
 6. 接着使用 root 向 Bot 发送一条消息 "测试"，收到回复即正常运行。
 
 ## 5. 常见问题
+
+### `python main.py` 后没有反应
+
+[查看](../../10.%20常见问题/2.%20运行时常见问题.md)
 
 ### 卡在登录中
 
@@ -11777,6 +11785,11 @@ Windows 的防火墙策略拦截了 6099 端口, 请检查防火墙设置。
 [参考](https://blog.csdn.net/albertsh/article/details/122163518)
 
 
+### Daemons using outdated libraries
+
+Linux 终端环境可能会遇到这个报错，物理重启电脑后重试即可。
+
+如果无法解决请手动安装和配置 NapCat。
 
 ---
 
@@ -11787,6 +11800,14 @@ title:  运行时常见问题
 createTime: 2025/03/26 08:41:23
 permalink: /guide/8v15vh4m/
 ---
+
+### Windows11 执行 Python 后无反应
+
+Windows11 如果安装的 Python3.13，那么默认名是 `py`，执行以下命令运行。
+
+```shell
+py main.py
+```
 
 ### QQ 提醒我使用了第三方插件
 
