@@ -2075,6 +2075,8 @@ async def on_group(e: GroupMessageEvent):
 - `request_type`：`friend` | `group`
 - `flag`：请求标识（用于执行通过/拒绝操作）
 - `comment`：验证信息。
+- `user_id`： 申请要加群的用户 QQ 号
+- `group_id`：申请加入的群号（仅 `request_type` 为 `group` 时存在）
 
 便捷方法：
 - `is_group_request()`：判断是否为加群请求
@@ -7955,37 +7957,37 @@ class MyPlugin(NcatBotPlugin):
 ### 1. 冷却时间控制
 
 ```python
-from ncatbot.plugin_system.builtin_plugin.unified_registry.filter_system import CustomFilter
-from ncatbot.plugin_system.builtin_plugin.unified_registry.filter_system import filter_registry
+from ncatbot.core import BaseMessageEvent
+from ncatbot.plugin_system import NcatBotPlugin, command_registry
+from ncatbot.plugin_system.builtin_plugin.unified_registry import BaseFilter
 
-@filter_registry.register("cooldown")
-def cooldown_filter(event: BaseMessageEvent) -> bool:
-    """冷却时间过滤器 (60秒)"""
-    import time
-    user_id = event.user_id
-    current_time = time.time()
-    
-    if user_id in self.last_use:
-        if current_time - self.last_use[user_id] < 60:
-            return False  # 还在冷却中
-    
-    self.last_use[user_id] = current_time
-    return True
+class CooldownFilter(BaseFilter):
+    """冷却时间过滤器"""
+    def __init__(self, cd: float):
+        super().__init__()
+        self.cd = cd  # 记录冷却时间
+        self.last_use = {}  # 记录上次使用时间
+
+    def check(self, event: BaseMessageEvent) -> bool:
+        import time
+        user_id = event.user_id
+        current_time = time.time()
+
+        if user_id in self.last_use:
+            if current_time - self.last_use[user_id] < self.cd:
+                return False  # 还在冷却中
+
+        self.last_use[user_id] = current_time
+        return True
 
 class MyPlugin(NcatBotPlugin):
-    def __init__(self):
-        super().__init__()
-        self.last_use = {}  # 记录上次使用时间
-    
     async def on_load(self):
         pass
 
-
-    @filter_registry.filters("cooldown")
+    @CooldownFilter(60)  # 冷却时间设置为60秒
     @command_registry.command("limited")
     async def limited_command(self, event: BaseMessageEvent):
         await event.reply("有冷却限制的命令")
-    
 ```
 
 ## 🚦 下一步
